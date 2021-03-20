@@ -1,96 +1,100 @@
-class CanvasFitText {
-  
-  constructor(selector, text, width, height) {
-    this.canvas = document.querySelector(selector)
-    this.ctx = this.canvas.getContext('2d');
-    this.text = text
-    var rect = this.canvas.getBoundingClientRect();
-    this.width = Math.min(width, rect.width) 
-    this.height = Math.min(height, rect.height)
-    
-    this.over = false
-    this.under = false
-    this.fontSize = 16
-    this.ctx.textBaseline = 'top'
-    
-    this.calcLines()
-    this.writeLines()
+CanvasRenderingContext2D.prototype.fitText = function (
+  text,
+  x,
+  y,
+  width,
+  height
+) {
+  var _this = this,
+    baseFontSize = 1,
+    fontSize = baseFontSize,
+    widthChangePerFontSize,
+    lineHeight = 1.2;
+
+  function getMetrics(text) {
+    let m = _this.measureText(text);
+    return {
+      width:
+        Math.abs(m.actualBoundingBoxLeft) + Math.abs(m.actualBoundingBoxRight),
+      height:
+        Math.abs(m.fontBoundingBoxAscent) + Math.abs(m.fontBoundingBoxDescent),
+    };
   }
 
-  textWidth(text) {
-    let metrics = this.ctx.measureText(text)
-    return Math.abs(metrics.actualBoundingBoxLeft) + 
-      Math.abs(metrics.actualBoundingBoxRight)
+  function calcArea() {
+    let metrics = getMetrics(text);
+    let rowHeight = metrics.height + fontSize * lineHeight;
+    return metrics.width * rowHeight;
   }
-  
-  textHeight(text) {
-    let metrics = this.ctx.measureText(text)
-    return Math.abs(metrics.fontBoundingBoxAscent) + 
-      Math.abs(metrics.fontBoundingBoxDescent)
-  }
-  
-  lineHeight() {
-    return this.fontSize * 1.2
-  }
-  
-  totalHeight() {
-    let totalWidth = this.textWidth(this.text)
-    let rows = Math.ceil(totalWidth / this.width)  
-    let totalTextHeight = rows * this.textHeight(this.text) 
-    let rowsHeight = (rows - 1) * this.lineHeight()
-    return totalTextHeight + rowsHeight
-  }
-  
-  setFontSize(size = this.fontSize) {
-    this.ctx.font = `${size}px sans-serif`
-  }
-  
-  getBox() {
-    let d = {
-      width: this.textWidth(this.text),
-      height: this.totalHeight()
+
+  function setFontSizeByArea() {
+    let currArea = calcArea();
+    while (currArea < width * height) {
+      currArea = calcArea();
+      fontSize++;
+      _this.font = `${fontSize}px sans-serif`;
     }
-    return d
   }
 
-  checkBox() {
-    let box = this.getBox()
-    this.over = box.width > this.width && box.height > this.height
-    this.under = box.height < this.height
+  function setFontSizeByWidth() {
+    let widthDiff = parseFloat(width - getMetrics(text).width),
+      fontIncrease = widthDiff / widthChangePerFontSize;
+    _this.font = `${fontSize + fontIncrease}px sans-serif`;
   }
 
-  calcLines() {
-    
-    this.checkBox()
-    let wentUp = false, wentDown = false
-    while ( (this.over || this.under) ) {
-      this.checkBox()
-      if ( this.over ) {
-        this.setFontSize(this.fontSize -= 1)
-      } else if (this.under) {
-        if ( wentDown && wentUp) break
-        this.setFontSize(this.fontSize += 1)
-      }
-      this.over ? wentDown = true : wentUp = true
-    }
-
-  }
-
-  writeLines() {
-    let words = this.text.split(' ')
-    let line = ''
-    let y = 0
-    for ( let i = 0; i < words.length; i++ ) {
-      let word = words[i]
-      if ( this.textWidth(line + `${word} `) > this.width - 10 ) {
-        this.ctx.fillText(line, 0, y)
-        line = `${word} `
-        y += this.lineHeight()
+  function getTextToLines() {
+    let lines = [],
+      line = "",
+      words = text.split(" ");
+    while ((word = words.shift())) {
+      let lineMetrics = getMetrics(line),
+        wordMetrics = getMetrics(` ${word}`);
+      if (lineMetrics.width + wordMetrics.width < width) {
+        line += ` ${word}`;
       } else {
-        line += `${word} `
+        lines.push(line.trim());
+        line = word;
       }
-      if ( i === words.length - 1 ) this.ctx.fillText(line, 0, y)
+    }
+    lines.push(line.trim());
+    return lines;
+  }
+
+  function writeText(lines) {
+    for (let line of lines) {
+      _this.fillText(line, x, y);
+      y += lineHeight * fontSize;
     }
   }
-  
-}
+
+  function calcWidthChangePerFontSize() {
+    let metrics = getMetrics(text),
+      startWidth = metrics.width;
+
+    _this.font = `${fontSize + 1}px sans-serif`;
+    widthChangePerFontSize = getMetrics(text).width - startWidth;
+
+    // Reset font or calcWidth() will not increase enough
+    _this.font = `${baseFontSize}px sans-serif`;
+  }
+
+  (function () {
+    if (width === undefined) {
+      throw new Error("CanvasFitText: width is required");
+    }
+
+    // Set starting font size, so we're always increasing the font up to reach target width
+    // i.e. Can ignore if the starting width is higher than target width
+    _this.font = `${baseFontSize}px sans-serif`;
+
+    if (height) {
+      setFontSizeByArea();
+      var lines = getTextToLines();
+      writeText(lines);
+    } else {
+      calcWidthChangePerFontSize();
+      setFontSizeByWidth();
+      writeText([text]);
+    }
+  })();
+};
