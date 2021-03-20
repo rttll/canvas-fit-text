@@ -7,7 +7,7 @@ Constrain text by width, or by width and height to allow line wrapping.
 
 Download `CanvasFitText.js` and include in your project using a script tag.
 
-```
+```html
 <script src="./path/to/CanvasFitText.js"></script>
 ```
 
@@ -15,30 +15,27 @@ Download `CanvasFitText.js` and include in your project using a script tag.
 
 CanvasFitText extends the native CanvasRenderingContext2D. Use it directly on your context.
 
-```
-
-let canvas = document.querySelect('canvas')
-let ctx = canvas.CanvasRenderingContext2D('2d')
+```js
+let canvas = document.querySelect("canvas");
+let ctx = canvas.CanvasRenderingContext2D("2d");
 
 // Constrain to width 200px
 // Starting from 0,0
 
-text = "Hello world!"
-ctx.fitText(text, 0, 0, 200)
-
+text = "Hello world!";
+ctx.fitText(text, 0, 0, 200);
 
 // Add height prop to enable line wrapping.
 // Constrain text to width 200px and height 100px.
 // Starting from 0,0
 
-text = "Hello world! How are you? Ok byeee!"
-ctx.fitText(text, 0, 0, 200, 100)
-
+text = "Hello world! How are you? Ok byeee!";
+ctx.fitText(text, 0, 0, 200, 100);
 ```
 
 ## Props
 
-Available props for use with CanvasFitText.
+Available props for use with `CanvasFitText`.
 
 | Prop     | Required | Description                                                | Type   |
 | -------- | -------- | ---------------------------------------------------------- | ------ |
