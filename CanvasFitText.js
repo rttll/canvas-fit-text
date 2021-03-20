@@ -61,9 +61,6 @@ CanvasRenderingContext2D.prototype.fitText = function (
   }
 
   function writeText(lines) {
-    _this.strokeStyle = "red";
-    _this.strokeRect(x, y, width, height);
-
     for (let line of lines) {
       _this.fillText(line, x, y);
       y += lineHeight * fontSize;
