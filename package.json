@@ -1,6 +1,6 @@
 {
   "name": "canvas-fit-text",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multline canvas fittext",
   "main": "src/index.js",
   "repository": "https://github.com/thisadrian/canvas-fit-text.git",
@@ -15,4 +15,3 @@
     "parcel-bundler": "^1.12.5"
   }
 }
-
