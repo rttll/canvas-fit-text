@@ -18,8 +18,9 @@ Or download the repo and copy `dist/canvas-fit-text.js` to your project.
 CanvasFitText extends the native CanvasRenderingContext2D. Use it directly on the context.
 
 ```js
-let canvas = document.querySelect('canvas');
-let ctx = canvas.CanvasRenderingContext2D('2d');
+let text,
+  canvas = document.querySelect('canvas'),
+  ctx = canvas.CanvasRenderingContext2D('2d');
 
 // Constrain to width 200px
 // Starting from 0,0
@@ -44,6 +45,10 @@ ctx.fitText(text, 0, 0, 200, 100);
 | `y`      | Yes      | Y coordinate to start printing                             | String |
 | `width`  | Yes      | Max width text can expand to                               | Number |
 | `height` | No       | Enables line wrapping. Sets max height text can expand to. | Number |
+
+## Usage Notes
+
+It currently only uses sans-serif.
 
 ### Todo
 
