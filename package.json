@@ -1,0 +1,9 @@
+{
+  "name": "canvas-fit-text",
+  "version": "1.0.0",
+  "description": "Multline canvas fittext",
+  "main": "index.js",
+  "repository": "https://github.com/thisadrian/canvas-fit-text.git",
+  "author": "Adrian Cousens <a@thisadrian.com>",
+  "license": "MIT"
+}
