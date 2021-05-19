@@ -3,41 +3,41 @@
 Multi-line fit-text for canvas.
 Constrain text by width, or by width and height to allow line wrapping.
 
-## Setup
+## Installation
 
-Download `CanvasFitText.js` and include in your project using a script tag.
+Install w/ yarn or npm and import into your projct.
 
-```html
-<script src="./path/to/CanvasFitText.js"></script>
+```bash
+yarn add canvas-fit-text
 ```
+
+Or download the repo and copy `dist/canvas-fit-text.js` to your project.
 
 ## Usage
 
-CanvasFitText extends the native CanvasRenderingContext2D. Use it directly on your context.
+CanvasFitText extends the native CanvasRenderingContext2D. Use it directly on the context.
 
 ```js
-let canvas = document.querySelect("canvas");
-let ctx = canvas.CanvasRenderingContext2D("2d");
+let canvas = document.querySelect('canvas');
+let ctx = canvas.CanvasRenderingContext2D('2d');
 
 // Constrain to width 200px
 // Starting from 0,0
 
-text = "Hello world!";
+text = 'Hello world!';
 ctx.fitText(text, 0, 0, 200);
 
 // Add height prop to enable line wrapping.
 // Constrain text to width 200px and height 100px.
 // Starting from 0,0
 
-text = "Hello world! How are you? Ok byeee!";
+text = 'Hello world! How are you? Ok byeee!';
 ctx.fitText(text, 0, 0, 200, 100);
 ```
 
-## Props
+## Usage args
 
-Available props for use with `CanvasFitText`.
-
-| Prop     | Required | Description                                                | Type   |
+| Arg      | Required | Description                                                | Type   |
 | -------- | -------- | ---------------------------------------------------------- | ------ |
 | `text`   | Yes      | The text to print                                          | String |
 | `x`      | Yes      | X coordinate to start printing                             | String |
