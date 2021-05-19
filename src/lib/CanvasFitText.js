@@ -1,10 +1,4 @@
-CanvasRenderingContext2D.prototype.fitText = function (
-  text,
-  x,
-  y,
-  width,
-  height
-) {
+module.exports = function (text, x, y, width, height) {
   var _this = this,
     baseFontSize = 1,
     fontSize = baseFontSize,
@@ -44,8 +38,8 @@ CanvasRenderingContext2D.prototype.fitText = function (
 
   function getTextToLines() {
     let lines = [],
-      line = "",
-      words = text.split(" ");
+      line = '',
+      words = text.split(' ');
     while ((word = words.shift())) {
       let lineMetrics = getMetrics(line),
         wordMetrics = getMetrics(` ${word}`);
@@ -80,7 +74,7 @@ CanvasRenderingContext2D.prototype.fitText = function (
 
   (function () {
     if (width === undefined) {
-      throw new Error("CanvasFitText: width is required");
+      throw new Error('CanvasFitText: width is required');
     }
 
     // Set starting font size, so we're always increasing the font up to reach target width

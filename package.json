@@ -1,0 +1,18 @@
+{
+  "name": "canvas-fit-text",
+  "version": "1.0.0",
+  "description": "Multline canvas fittext",
+  "main": "src/index.js",
+  "repository": "https://github.com/thisadrian/canvas-fit-text.git",
+  "author": "Adrian Cousens <a@thisadrian.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build src/index.js -o canvas-fit-text.js",
+    "prepublish": "parcel build src/index.js -o canvas-fit-text.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}
+
