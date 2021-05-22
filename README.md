@@ -1,39 +1,62 @@
 # Canvas Fit Text
 
-Multi-line fit-text for canvas.
-Constrain text by width, or by width and height to allow line wrapping.
+Fit-text for canvas, with optional line-wrapping.  
+Integrates with and preserves the context's current font value.
 
 ## Installation
 
-Install w/ yarn or npm and import into your projct.
+Install w/ yarn or npm...
 
 ```bash
 yarn add canvas-fit-text
+```
+
+...and import into your projct.
+
+```bash
+# ES6
+import fitText from 'canvas-fit-text';
+
+# or CommonJS
+var fitText = require('canvas-fit-text');
+
 ```
 
 Or download the repo and copy `dist/canvas-fit-text.js` to your project.
 
 ## Usage
 
-CanvasFitText extends the native CanvasRenderingContext2D. Use it directly on the context.
+CanvasFitText extends the native CanvasRenderingContext2D.  
+Use it directly on the context.
 
 ```js
-let text,
-  canvas = document.querySelect('canvas'),
+let canvas = document.querySelect('canvas'),
   ctx = canvas.CanvasRenderingContext2D('2d');
 
-// Constrain to width 200px
-// Starting from 0,0
+// Fit to width 200px.
+ctx.fitText('Hello world!', 0, 0, 200);
 
-text = 'Hello world!';
-ctx.fitText(text, 0, 0, 200);
-
-// Add height prop to enable line wrapping.
-// Constrain text to width 200px and height 100px.
-// Starting from 0,0
-
-text = 'Hello world! How are you? Ok byeee!';
+// Fit to width 200px.
+// Constrain to height 100px (which also enables line wrapping)
+let text = 'Hello world! How are you? Ok byeee!';
 ctx.fitText(text, 0, 0, 200, 100);
+```
+
+Original context font value is preserved (after fit).
+
+```js
+let canvas = document.querySelect('canvas'),
+  ctx = canvas.CanvasRenderingContext2D('2d');
+
+// Current font
+ctx.font = '12px sans-serif';
+
+// Will print at ~439px sans-serif
+ctx.fitText('foo', 0, 0, 600);
+
+// Font was reverted back.
+console.log(ctx.font);
+// ➜ 12px sans-serif
 ```
 
 ## Usage args
@@ -46,11 +69,8 @@ ctx.fitText(text, 0, 0, 200, 100);
 | `width`  | Yes      | Max width text can expand to                               | Number |
 | `height` | No       | Enables line wrapping. Sets max height text can expand to. | Number |
 
-## Usage Notes
+## Notes
 
-It currently only uses sans-serif.
+Setting height will constrain `max-height`. Not `min-height`. So, setting width and height will often leave vertical and horizontal space.
 
-### Todo
-
-- Integrate w/ context's current font setting, instead of overriding w/ `sans-serif`.
-- Possibly add `min-` options. E.g. `min-fontsize`, `min-height`.
+With only the width prop, the text will fit horizontally right to the edge.
