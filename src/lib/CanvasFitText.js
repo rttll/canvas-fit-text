@@ -1,12 +1,19 @@
 module.exports = function (text, x, y, width, height) {
-  var _this = this,
-    baseFontSize = 1,
-    fontSize = baseFontSize,
-    widthChangePerFontSize,
-    lineHeight = 1.2;
+  const ctx = this;
+  const fontBase = ctx.font;
+  const fontResetSize = 1;
+
+  let fontSize = fontResetSize,
+    lineHeight = 1.2,
+    widthChangePerFontSize;
+
+  function setFont(size) {
+    let font = fontBase.replace(/[0-9]+(em|px)/, `${size}px`);
+    ctx.font = `${font}`;
+  }
 
   function getMetrics(text) {
-    let m = _this.measureText(text);
+    let m = ctx.measureText(text);
     return {
       width:
         Math.abs(m.actualBoundingBoxLeft) + Math.abs(m.actualBoundingBoxRight),
@@ -26,14 +33,14 @@ module.exports = function (text, x, y, width, height) {
     while (currArea < width * height) {
       currArea = calcArea();
       fontSize++;
-      _this.font = `${fontSize}px sans-serif`;
+      setFont(fontSize);
     }
   }
 
   function setFontSizeByWidth() {
     let widthDiff = parseFloat(width - getMetrics(text).width),
       fontIncrease = widthDiff / widthChangePerFontSize;
-    _this.font = `${fontSize + fontIncrease}px sans-serif`;
+    setFont(fontSize + fontIncrease);
   }
 
   function getTextToLines() {
@@ -56,7 +63,7 @@ module.exports = function (text, x, y, width, height) {
 
   function writeText(lines) {
     for (let line of lines) {
-      _this.fillText(line, x, y);
+      ctx.fillText(line, x, y);
       y += lineHeight * fontSize;
     }
   }
@@ -65,11 +72,11 @@ module.exports = function (text, x, y, width, height) {
     let metrics = getMetrics(text),
       startWidth = metrics.width;
 
-    _this.font = `${fontSize + 1}px sans-serif`;
+    setFont(fontSize + 1);
     widthChangePerFontSize = getMetrics(text).width - startWidth;
 
     // Reset font or calcWidth() will not increase enough
-    _this.font = `${baseFontSize}px sans-serif`;
+    setFont(fontResetSize);
   }
 
   (function () {
@@ -79,7 +86,7 @@ module.exports = function (text, x, y, width, height) {
 
     // Set starting font size, so we're always increasing the font up to reach target width
     // i.e. Can ignore if the starting width is higher than target width
-    _this.font = `${baseFontSize}px sans-serif`;
+    setFont(fontResetSize);
 
     if (height) {
       setFontSizeByArea();
@@ -90,5 +97,7 @@ module.exports = function (text, x, y, width, height) {
       setFontSizeByWidth();
       writeText([text]);
     }
+    // Reset font
+    ctx.font = fontBase;
   })();
 };
